@@ -1,0 +1,12 @@
+[package]
+name = "rlite"
+version = "0.0.1"
+authors = ["Sebastian Waisbrot <seppo0010@gmail.com>"]
+exclude = [
+    ".gitignore",
+    ".travis.yml",
+    "tests/*",
+]
+
+[dependencies]
+libc = "0.1.10"
