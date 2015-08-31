@@ -1,5 +1,7 @@
 //! # Interface to rlite
 //!
+//! rlite is a self-contained, serverless, zero-configuration, transactional
+//! redis-compatible database engine. rlite is to Redis what SQLite is to SQL.
 //! ## Example
 //!
 //! ```rust
@@ -10,7 +12,7 @@
 //! assert_eq!(conn.read_reply().unwrap(), Reply::Status("OK".to_owned()));
 //!
 //! conn.write_command(&["get".as_bytes(), "key".as_bytes()]).unwrap();
-//! assert_eq!(conn.read_reply().unwrap(), Reply::Status("OK".to_owned()));)
+//! assert_eq!(conn.read_reply().unwrap(), Reply::Data(b"value".to_vec()));)
 //! ```
 extern crate libc;
 

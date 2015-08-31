@@ -2,11 +2,19 @@
 name = "rlite"
 version = "0.0.1"
 authors = ["Sebastian Waisbrot <seppo0010@gmail.com>"]
+license-file = "LICENSE"
 exclude = [
     ".gitignore",
     ".travis.yml",
     "tests/*",
 ]
+
+description = "Bindings to rlite database"
+readme = "README.md"
+documentation = "http://seppo0010.github.io/rlite-rs/"
+
+repository = "https://github.com/seppo0010/rlite-rs"
+keywords = ["database", "rlite", "redis"]
 
 [dependencies]
 libc = "0.1.10"
