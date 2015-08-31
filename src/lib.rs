@@ -1,3 +1,17 @@
+//! # Interface to rlite
+//!
+//! ## Example
+//!
+//! ```rust
+//! let path = Path::new("db.rld");
+//! let rlite = Rlite::file(&path).unwrap();
+//!
+//! rlite.write_command(&["set".as_bytes(), "key".as_bytes(), "value".as_bytes()]).unwrap();
+//! assert_eq!(conn.read_reply().unwrap(), Reply::Status("OK".to_owned()));
+//!
+//! conn.write_command(&["get".as_bytes(), "key".as_bytes()]).unwrap();
+//! assert_eq!(conn.read_reply().unwrap(), Reply::Status("OK".to_owned()));)
+//! ```
 extern crate libc;
 
 use std::mem;
@@ -24,6 +38,7 @@ struct RliteReply {
     element: *const *const RliteReply,
 }
 
+/// A command reply
 #[derive(Clone, Debug, PartialEq)]
 pub enum Reply {
     Nil,
@@ -83,16 +98,19 @@ extern {
     fn rliteFree(context: *const c_void);
 }
 
+/// A database connection
 pub struct Rlite {
     rlite: *mut c_void,
 }
 
 impl Rlite {
+    /// Create a new database in memory
     pub fn memory() -> Self {
         let rlite = unsafe { rliteConnect(":memory:".as_ptr() as *const c_char, 0) };
         Rlite { rlite: rlite }
     }
 
+    /// Opens or creates a database in `path`.
     pub fn file(path: &Path) -> Result<Self, ()> {
         let f = match path.to_str() {
             Some(p) => p,
@@ -106,6 +124,8 @@ impl Rlite {
         }
     }
 
+    /// Executes the command. It returns either success or error, with no detail.
+    /// If it succeeded, use `read_reply` to get the response (if any).
     pub fn write_command(&self, command: &[&[u8]]) -> Result<(), ()> {
         let mut argv = Vec::new();
         let mut argvlen = Vec::new();
@@ -122,6 +142,9 @@ impl Rlite {
         }
     }
 
+    /// Reads the response of the first unread command.
+    /// Each command response is appended to a queue. This command pops from
+    /// that queue.
     pub fn read_reply(&self) -> Result<Reply, String> {
         unsafe {
             let mut reply = mem::zeroed();
